@@ -1,9 +1,29 @@
 import json
 import pytest
 from src.llm_client import (
-    strip_additional_properties, GeminiClient, OpenAICompatibleClient,
+    strip_additional_properties, inline_defs, GeminiClient, OpenAICompatibleClient,
     select_client_class, unwrap_one,
 )
+from src.schemas import TrendLabel, PatientVerdict
+
+
+def test_inline_defs_resolves_nested_refs():
+    schema = {
+        "type": "object",
+        "properties": {"cp": {"$ref": "#/$defs/CP"}, "n": {"type": "integer"}},
+        "$defs": {"CP": {"type": "object", "properties": {"x": {"type": "string"}}}},
+    }
+    out = inline_defs(schema)
+    assert "$defs" not in out
+    assert "$ref" not in json.dumps(out)
+    assert out["properties"]["cp"]["properties"]["x"]["type"] == "string"
+
+
+def test_nested_model_schemas_become_gemini_compatible():
+    # TrendLabel/PatientVerdict carry $defs+$ref, which Gemini cannot resolve.
+    for model in (TrendLabel, PatientVerdict):
+        blob = json.dumps(strip_additional_properties(inline_defs(model.model_json_schema())))
+        assert "$ref" not in blob and "$defs" not in blob
 
 def test_unwrap_one_handles_object_list_and_items_envelope():
     assert unwrap_one({"state": "STABLE"}) == {"state": "STABLE"}      # plain object

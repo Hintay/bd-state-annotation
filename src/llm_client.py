@@ -30,6 +30,34 @@ def strip_additional_properties(schema):
     return schema
 
 
+def inline_defs(schema):
+    """Inline `$ref`/`$defs` into a single self-contained schema.
+
+    pydantic emits nested models (e.g. ChangePoint, DiagnosisEvidence) as a
+    top-level `$defs` block referenced via `$ref`. Gemini's response_schema
+    dialect does not resolve `$ref`, so we replace every reference with a copy of
+    its definition (recursively) and drop `$defs`. The model schemas here are
+    acyclic, so no cycle guard is needed.
+    """
+    defs = schema.get("$defs", {})
+
+    def resolve(node):
+        if isinstance(node, dict):
+            if "$ref" in node:
+                name = node["$ref"].split("/")[-1]
+                merged = resolve(deepcopy(defs.get(name, {})))
+                for k, v in node.items():          # keep any sibling keys
+                    if k != "$ref":
+                        merged[k] = resolve(v)
+                return merged
+            return {k: resolve(v) for k, v in node.items() if k != "$defs"}
+        if isinstance(node, list):
+            return [resolve(v) for v in node]
+        return node
+
+    return resolve(schema)
+
+
 class _BaseClient:
     """Shared parse/retry logic. Subclasses implement `_generate`."""
 
@@ -71,7 +99,8 @@ class GeminiClient(_BaseClient):
         kwargs = {"system_instruction": system_prompt}
         if response_schema is not None:
             kwargs["response_mime_type"] = "application/json"
-            kwargs["response_schema"] = strip_additional_properties(deepcopy(response_schema))
+            kwargs["response_schema"] = strip_additional_properties(
+                inline_defs(deepcopy(response_schema)))
         config = types.GenerateContentConfig(**kwargs)
         return self._client.models.generate_content(
             model=self.model_name, contents=user_prompt, config=config,
