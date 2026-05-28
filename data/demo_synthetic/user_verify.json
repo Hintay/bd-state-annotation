@@ -1,0 +1,8 @@
+{
+  "author_name": "user_demo",
+  "posts": [
+    {"post_id": "v1", "text": "got my official bipolar II diagnosis last month after a full psych eval."},
+    {"post_id": "v2", "text": "my psychiatrist started me on lamotrigine, titrating up slowly."},
+    {"post_id": "v3", "text": "three months on lithium + lamotrigine now, mood is way more even."}
+  ]
+}
