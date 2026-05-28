@@ -14,6 +14,12 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+# This is a runnable demo, not an installable library: run it from the repo root
+# with `python main.py ...`. Tell uv not to build/install the project itself, so
+# `uv sync` only provisions the dependencies (no build backend required).
+[tool.uv]
+package = false
+
 [tool.pytest.ini_options]
 pythonpath = ["."]
 testpaths = ["tests"]
