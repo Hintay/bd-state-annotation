@@ -20,9 +20,10 @@ applied:
 - **Time** → relative `day` offset from each user's first sampled post; absolute
   dates are removed. This preserves 14-day windowing while blocking time-plus-
   subreddit lookup.
-- **Absolute dates in free-text** (annotation `reasoning`, `trend_summary`,
-  change-point `event`) are masked to `[DATE]`; change-point `date` is expressed
-  as a relative `day_N` offset.
+- **Absolute dates in annotation free-text** (`trend_summary`, change-point
+  `event`) that fall inside the period's window are converted to the same
+  relative `day_N` offset; any date outside the window (or too coarse to place)
+  is masked to `[DATE]`. Change-point `date` is likewise a relative `day_N`.
 
 Subreddit names and clinical content (medications, diagnoses, symptoms) are
 preserved, as they are not identifying and are essential to the annotation task.
