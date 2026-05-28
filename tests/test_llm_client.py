@@ -53,3 +53,28 @@ def test_select_client_class_maps_providers():
     assert select_client_class("google") is GeminiClient
     with pytest.raises(ValueError):
         select_client_class("bogus")
+
+
+def _bare_openai():
+    c = OpenAICompatibleClient.__new__(OpenAICompatibleClient)  # no SDK / no key
+    c.model_name = "fake"
+    c.reasoning_effort = None
+    return c
+
+def test_openai_messages_embed_schema_field_names_when_schema_given():
+    # The OpenAI-compatible path uses loose json_object mode, so it must convey the
+    # target field names to the model -- otherwise prompts that don't enumerate
+    # their output fields (e.g. patient_verification) get invented field names.
+    schema = {"type": "object", "properties": {
+        "verification_status": {"type": "string"}, "diagnosis_type": {"type": "string"}}}
+    msgs = _bare_openai()._build_messages("sys", "the user prompt", schema)
+    blob = json.dumps(msgs)
+    assert "verification_status" in blob and "diagnosis_type" in blob
+    assert "the user prompt" in blob
+
+def test_openai_messages_unchanged_without_schema():
+    msgs = _bare_openai()._build_messages("sys", "plain user", None)
+    assert msgs == [
+        {"role": "system", "content": "sys"},
+        {"role": "user", "content": "plain user"},
+    ]

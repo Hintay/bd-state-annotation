@@ -95,13 +95,32 @@ class OpenAICompatibleClient(_BaseClient):
         self.reasoning_effort = reasoning_effort or os.environ.get("OPENAI_REASONING_EFFORT")
         self._client = OpenAI(base_url=base_url, api_key=api_key)
 
+    def _build_messages(self, system_prompt: str, user_prompt: str,
+                        response_schema: dict | None = None) -> list[dict]:
+        """Assemble chat messages, conveying the output schema to the model.
+
+        json_object mode only guarantees *valid* JSON, not the right *fields*.
+        Gemini's native response_schema enforces the field contract; some prompts
+        (e.g. patient_verification) rely on that and do not restate their fields.
+        To reproduce that enforcement portably, we append the JSON Schema to the
+        user turn so the model emits exactly the expected field names.
+        """
+        user_content = user_prompt
+        if response_schema is not None:
+            user_content += (
+                "\n\n---\nReturn ONLY valid JSON, no markdown fences. Each result "
+                "object MUST use exactly the field names defined by this JSON "
+                "Schema (no extra or renamed keys):\n"
+                + json.dumps(response_schema, ensure_ascii=False))
+        return [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content},
+        ]
+
     def _generate(self, system_prompt: str, user_prompt: str, response_schema: dict | None = None) -> str:
         kwargs = {
             "model": self.model_name,
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
+            "messages": self._build_messages(system_prompt, user_prompt, response_schema),
         }
         if response_schema is not None:
             kwargs["response_format"] = {"type": "json_object"}
