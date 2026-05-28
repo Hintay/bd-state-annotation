@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "LLM-based longitudinal state annotation of Reddit posts for bipolar disorder research"
 requires-python = ">=3.11"
 dependencies = [
+    "openai>=1.40",
     "google-genai>=0.3.0",
     "pydantic>=2.6",
     "python-dotenv>=1.0",

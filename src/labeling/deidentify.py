@@ -8,5 +8,5 @@ def run(client, input_path: str) -> str:
     return client.complete_text(system_prompt, text)
 
 def main():
-    from src.llm_client import GeminiClient
-    print(run(GeminiClient(), "data/demo_synthetic/post_pii.txt"))
+    from src.llm_client import make_client
+    print(run(make_client(), "data/demo_synthetic/post_pii.txt"))
