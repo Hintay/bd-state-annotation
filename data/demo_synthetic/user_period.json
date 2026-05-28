@@ -1,0 +1,8 @@
+{
+  "id": "demo_period_01",
+  "posts": [
+    {"post_id": "u_d1", "day": 0, "text": "first stable day in a while after the med change. cooked an actual dinner, felt calm."},
+    {"post_id": "u_d5", "day": 5, "text": "barely sleeping but full of energy, started three projects, emailed an old professor with a big idea."},
+    {"post_id": "u_d8", "day": 8, "text": "colors look like they're vibrating, opened the car door at speed because nothing can hurt me, I have a purpose now."}
+  ]
+}
