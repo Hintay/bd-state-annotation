@@ -59,7 +59,7 @@ class GeminiClient(_BaseClient):
                  api_endpoint: str | None = None):
         from google import genai  # lazy
         api_key = api_key or os.environ["GEMINI_API_KEY"]
-        self.model_name = model_name or os.environ.get("GEMINI_MODEL_NAME", "gemini-2.5-pro")
+        self.model_name = model_name or os.environ.get("GEMINI_MODEL_NAME", "gemini-3.1-pro-preview")
         api_endpoint = api_endpoint or os.environ.get("GEMINI_API_ENDPOINT")
         client_kwargs = {"api_key": api_key}
         if api_endpoint:
@@ -91,7 +91,7 @@ class OpenAICompatibleClient(_BaseClient):
         from openai import OpenAI  # lazy
         api_key = api_key or os.environ["OPENAI_API_KEY"]
         base_url = base_url or os.environ.get("OPENAI_BASE_URL", "https://openrouter.ai/api/v1")
-        self.model_name = model_name or os.environ.get("OPENAI_MODEL_NAME", "google/gemini-2.5-pro")
+        self.model_name = model_name or os.environ.get("OPENAI_MODEL_NAME", "google/gemini-3.1-pro-preview")
         self.reasoning_effort = reasoning_effort or os.environ.get("OPENAI_REASONING_EFFORT")
         self._client = OpenAI(base_url=base_url, api_key=api_key)
 
