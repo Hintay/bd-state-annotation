@@ -26,11 +26,18 @@ def strip_additional_properties(schema):
 
 
 class GeminiClient:
-    def __init__(self, api_key: str | None = None, model_name: str | None = None):
+    def __init__(self, api_key: str | None = None, model_name: str | None = None,
+                 api_endpoint: str | None = None):
         from google import genai  # lazy: only needed for real calls
         api_key = api_key or os.environ["GEMINI_API_KEY"]
         self.model_name = model_name or os.environ.get("GEMINI_MODEL_NAME", "gemini-2.5-pro")
-        self._client = genai.Client(api_key=api_key)
+        # Optional custom gateway/base URL. Reviewers using a standard Google AI
+        # Studio key can leave this unset; it defaults to Google's endpoint.
+        api_endpoint = api_endpoint or os.environ.get("GEMINI_API_ENDPOINT")
+        client_kwargs = {"api_key": api_key}
+        if api_endpoint:
+            client_kwargs["http_options"] = {"base_url": api_endpoint}
+        self._client = genai.Client(**client_kwargs)
 
     def _generate(self, system_prompt: str, user_prompt: str, response_schema: dict | None = None) -> str:
         """The only SDK-touching method. Builds config and returns the response text."""
