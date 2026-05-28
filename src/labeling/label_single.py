@@ -12,8 +12,7 @@ def run(client, input_path: str) -> dict:
     system_prompt = load_prompt("batch_single")
     user_prompt = f'Post id: {post["id"]}\n\n{post["text"]}'
     result = unwrap_one(client.complete_json(system_prompt, user_prompt, response_schema=SCHEMA))
-    SinglePostLabel(**result)          # validate
-    return result
+    return SinglePostLabel(**result).model_dump()   # validate + normalize (drop extra keys)
 
 def main():
     from src.llm_client import make_client

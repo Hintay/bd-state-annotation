@@ -15,3 +15,14 @@ def test_run_returns_schema_valid_dict(tmp_path):
     out = run(fake, "data/demo_synthetic/single.json")
     SinglePostLabel(**out)            # raises if invalid
     assert out["state"] == "HYPOMANIC"
+
+def test_run_unwraps_batch_list_and_drops_extra_keys():
+    # Batch-oriented prompts may return a JSON array; the runner unwraps to the
+    # first item, validates, and normalizes (extra keys dropped via model_dump).
+    fake = _FakeClient([{
+        "id": "demo_single_01", "state": "STABLE",
+        "opposite_pole_symptoms": [], "specifiers": [],
+        "confidence": "Low", "reasoning": "ok", "EXTRA": "should be dropped"}])
+    out = run(fake, "data/demo_synthetic/single.json")
+    assert out["state"] == "STABLE"
+    assert "EXTRA" not in out

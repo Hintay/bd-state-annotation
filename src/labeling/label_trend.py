@@ -13,8 +13,7 @@ def run(client, input_path: str) -> dict:
     lines = [f'[day {p["day"]}] ({p["post_id"]}) {p["text"]}' for p in period["posts"]]
     user_prompt = f'Period id: {period["id"]}\n\n' + "\n".join(lines)
     result = unwrap_one(client.complete_json(system_prompt, user_prompt, response_schema=SCHEMA))
-    TrendLabel(**result)
-    return result
+    return TrendLabel(**result).model_dump()        # validate + normalize (drop extra keys)
 
 def main():
     from src.llm_client import make_client

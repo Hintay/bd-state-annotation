@@ -13,8 +13,7 @@ def run(client, input_path: str) -> dict:
     lines = [f'({p["post_id"]}) {p["text"]}' for p in user["posts"]]
     user_prompt = f'author_name: {user["author_name"]}\n\n' + "\n".join(lines)
     result = unwrap_one(client.complete_json(system_prompt, user_prompt, response_schema=SCHEMA))
-    PatientVerdict(**result)
-    return result
+    return PatientVerdict(**result).model_dump()    # validate + normalize (drop extra keys)
 
 def main():
     from src.llm_client import make_client
