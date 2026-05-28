@@ -1,0 +1,7 @@
+__pycache__/
+*.py[oc]
+.venv/
+.env
+data/demo_synthetic/*_output.json
+data/*_output*
+*.log
