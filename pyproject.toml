@@ -1,7 +1,7 @@
 [project]
-name = "longitudinal-mood-labeling"
+name = "bd-state-annotation"
 version = "0.1.0"
-description = "LLM-based longitudinal mood-state labeling for bipolar disorder research"
+description = "LLM-based longitudinal state annotation of Reddit posts for bipolar disorder research"
 requires-python = ">=3.11"
 dependencies = [
     "google-genai>=0.3.0",

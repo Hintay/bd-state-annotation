@@ -14,6 +14,15 @@ def test_single_post_label_rejects_bad_state():
         SinglePostLabel(id="p1", state="EUPHORIC", opposite_pole_symptoms=[],
                         specifiers=[], confidence="High", reasoning="x")
 
+def test_state_label_accepts_uncertain():
+    single = SinglePostLabel(id="p1", state="UNCERTAIN", opposite_pole_symptoms=[],
+                             specifiers=[], confidence="Low", reasoning="no clinical signal")
+    assert single.state == "UNCERTAIN"
+    trend = TrendLabel(id="u1", dominant_state="UNCERTAIN", opposite_pole_symptoms=[],
+                       specifiers=[], trend_direction="NO_TREND", trend_summary="unanalyzable",
+                       change_points=[], confidence=0.2)
+    assert trend.dominant_state == "UNCERTAIN"
+
 def test_trend_label_confidence_is_float():
     obj = TrendLabel(
         id="u1", dominant_state="MANIC", opposite_pole_symptoms=[], specifiers=[],

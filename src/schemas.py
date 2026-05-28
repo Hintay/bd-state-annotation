@@ -2,11 +2,13 @@
 from typing import Literal
 from pydantic import BaseModel
 
-MoodState = Literal["MANIC", "HYPOMANIC", "DEPRESSIVE", "STABLE"]
+# The custom state schema is the paper's contribution. The prompts allow these
+# five categories as output (UNCERTAIN is the defensive fallback).
+StateLabel = Literal["MANIC", "HYPOMANIC", "DEPRESSIVE", "STABLE", "UNCERTAIN"]
 
 class SinglePostLabel(BaseModel):
     id: str
-    state: MoodState
+    state: StateLabel
     opposite_pole_symptoms: list[str]
     specifiers: list[Literal["with_mixed_features"]]
     confidence: Literal["High", "Medium", "Low"]   # single-post prompt uses a string scale
@@ -20,7 +22,7 @@ class ChangePoint(BaseModel):
 
 class TrendLabel(BaseModel):
     id: str
-    dominant_state: Literal["MANIC", "HYPOMANIC", "DEPRESSIVE", "STABLE", "NO_DATA"]
+    dominant_state: Literal["MANIC", "HYPOMANIC", "DEPRESSIVE", "STABLE", "UNCERTAIN", "NO_DATA"]
     opposite_pole_symptoms: list[str]
     specifiers: list[str]
     trend_direction: Literal["NO_TREND", "FLUCTUATING", "TOWARDS_DEPRESSION", "TOWARDS_MANIA"]
