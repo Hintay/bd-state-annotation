@@ -18,5 +18,5 @@ def run(client, input_path: str) -> dict:
 
 def main():
     from src.llm_client import make_client
-    out = run(make_client(), "data/demo_synthetic/user_verify.json")
-    print(json.dumps(out, indent=2, ensure_ascii=False))
+    from src.render import print_json_result
+    print_json_result(run(make_client(), "data/demo_synthetic/user_verify.json"))

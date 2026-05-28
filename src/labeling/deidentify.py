@@ -9,4 +9,5 @@ def run(client, input_path: str) -> str:
 
 def main():
     from src.llm_client import make_client
-    print(run(make_client(), "data/demo_synthetic/post_pii.txt"))
+    from src.render import print_text_result
+    print_text_result(run(make_client(), "data/demo_synthetic/post_pii.txt"))
