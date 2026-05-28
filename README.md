@@ -109,5 +109,6 @@ MIT — see `LICENSE`.
 
 If you use this code or sample, please cite our submission:
 
-> Jiefeng Lin and Shuntaro Yada. *Few-Shot Prompt-Based Longitudinal Mood-State
-> Analysis of Bipolar Disorder on Social Media.* 2026. (Under review.)
+> Jiefeng Lin and Shuntaro Yada.
+> *Few-Shot Prompt-Based Longitudinal Mood-State Analysis of Bipolar Disorder on Social Media.*
+> 2026. (Under review.)
