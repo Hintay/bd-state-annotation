@@ -6,7 +6,7 @@ Given a Reddit post (submission or comment), identify all PII spans and wrap eac
 
 ## PII Categories
 
-PII is classified by identification risk:
+Following the taxonomy of Yada et al. (2026), PII is classified by identification risk:
 
 ### 1. Identifiers (`<IDENT>`)
 Descriptions that **alone** can identify a specific individual.
