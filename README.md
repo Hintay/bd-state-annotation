@@ -1,14 +1,16 @@
 # Longitudinal State Annotation for Bipolar Disorder
 
-Code and a small de-identified data sample accompanying our submission on a
+Code and a small de-identified data sample accompanying our paper on a
 few-shot prompt-based LLM method for longitudinal mood-state annotation of
-Reddit posts for bipolar disorder (BD) research. External validation uses the
-BD-Risk dataset (Lee et al., NAACL 2024).
+Reddit posts for bipolar disorder (BD) research, accepted at BESC 2026
+(International Conference on Behavioral and Social Computing, Springer).
+External validation uses the BD-Risk dataset (Lee et al., NAACL 2024).
 
 ## Overview
 
 The method annotates Reddit posts at two temporal granularities, grounded in
-DSM-5 episode criteria and requiring no task-specific fine-tuning:
+DSM-5 episode criteria and requiring no task-specific training data at
+inference time:
 
 - **Per-post mood state**: MANIC / HYPOMANIC / DEPRESSIVE / STABLE (with
   UNCERTAIN as a defensive fallback).
@@ -37,6 +39,7 @@ self-identified, diagnosed BD patient?) and PII de-identification of post text.
 ├── src/
 │   ├── llm_client.py             # minimal two-provider client (OpenAI-compatible / Gemini)
 │   ├── prompts_loader.py
+│   ├── render.py                 # rich-console rendering of demo output
 │   ├── schemas.py                # pydantic output contracts
 │   └── labeling/
 │       ├── label_single.py
@@ -59,9 +62,11 @@ self-identified, diagnosed BD patient?) and PII de-identification of post text.
   - **Google AI official**: set `LLM_PROVIDER=gemini`, `GEMINI_API_KEY`, and
     optionally `GEMINI_MODEL_NAME`.
 
-The reported results use Gemini 3.1 Pro.
+The paper's primary annotator is Gemini 3.1 Pro. The cross-model evaluation
+runs the identical prompt on Gemini 3.5 Flash, Claude Opus 4.8, GLM-5.1,
+DeepSeek V4 Pro, and GPT-5.5, all reachable through the two providers above.
 
-## Quick Start — Run the Demo
+## Quick Start
 
 Each command runs one prompt on a fully synthetic input under
 `data/demo_synthetic/` and prints the result:
@@ -84,9 +89,9 @@ python main.py deid     # PII de-identification (prints tagged text)
 
 ## Data
 
-- `data/demo_synthetic/` — fully synthetic inputs for the runnable demo (no real
+- `data/demo_synthetic/`: fully synthetic inputs for the runnable demo (no real
   PII); the synthetic examples mirror those documented in the prompts.
-- `data/corpus_sample/` — 4 users from the BD-labeled corpus, de-identified via
+- `data/corpus_sample/`: 4 users from the BD-labeled corpus, de-identified via
   the de-identify prompt with metadata re-identification protection. **Sample
   only**; the full corpus is not included here. See
   `data/corpus_sample/README.md`.
@@ -95,20 +100,37 @@ python main.py deid     # PII de-identification (prints tagged text)
 
 ## Ethics
 
-The corpus was collected under institutional ethics approval (IRB no. 25-188).
+The corpus was collected under ethics approval by the Research Ethics
+Committee of the University of Tsukuba (approval no. 25-188).
 Released posts are de-identified; subreddit names, medications, diagnoses, and
 clinical content are preserved because they are essential to the task and are not
 identifying. Patient verification is LLM-based and does not constitute a clinical
 diagnosis.
 
+## Acknowledgments
+
+This work was supported by JSPS KAKENHI Grant Number JP26K21393.
+
 ## License
 
-MIT — see `LICENSE`.
+MIT (see `LICENSE`).
 
 ## Citation
 
-If you use this code or sample, please cite our submission:
+If you use this code or sample, please cite:
 
-> Jiefeng Lin and Shuntaro Yada.
+> Jiefeng Lin, Koichiro Watanabe, and Shuntaro Yada.
 > *Few-Shot Prompt-Based Longitudinal Mood-State Analysis of Bipolar Disorder on Social Media.*
-> 2026. (Under review.)
+> In Proceedings of the International Conference on Behavioral and Social
+> Computing (BESC 2026). Springer. To appear.
+
+```bibtex
+@inproceedings{lin2026fewshot,
+  title     = {Few-Shot Prompt-Based Longitudinal Mood-State Analysis of Bipolar Disorder on Social Media},
+  author    = {Lin, Jiefeng and Watanabe, Koichiro and Yada, Shuntaro},
+  booktitle = {Proceedings of the International Conference on Behavioral and Social Computing (BESC 2026)},
+  publisher = {Springer},
+  year      = {2026},
+  note      = {To appear}
+}
+```
